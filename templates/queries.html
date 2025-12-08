@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Queries{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>Tracked Queries</h2>
+    <p class="muted">These are the search terms you’re tracking (dummy + real when eBay API plays nice).</p>
+
+    {% if queries %}
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Search term</th>
+                <th>Created</th>
+                <th>Items</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for q in queries %}
+                <tr>
+                    <td>{{ q.id }}</td>
+                    <td>
+                        <a href="/ui/queries/{{ q.id }}">{{ q.name }}</a>
+                    </td>
+                    <td>{{ q.search_term }}</td>
+                    <td>{{ q.created_at }}</td>
+                    <td>
+                        <span class="tag tag-gray">
+                            /queries/{{ q.id }}/items
+                        </span>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No queries yet. Use the dummy ingester or eBay ingester to add some.</p>
+    {% endif %}
+</div>
+{% endblock %}
+
