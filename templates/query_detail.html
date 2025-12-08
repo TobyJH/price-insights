@@ -3,14 +3,64 @@
 {% block title %}Query {{ query.id }}{% endblock %}
 
 {% block content %}
+
+<!-- Query Header -->
 <div class="card">
     <h2>{{ query.name }}</h2>
+
     <p class="muted">
         Search term: <code>{{ query.search_term }}</code><br>
         Query ID: {{ query.id }} • Created: {{ query.created_at }}
     </p>
+
+    {% if stats %}
+    <!-- Stats Row -->
+    <div style="display:flex;gap:2.5rem;flex-wrap:wrap;margin-top:1rem;">
+
+        <div>
+            <div class="muted">Items</div>
+            <div><strong>{{ stats.item_count }}</strong></div>
+        </div>
+
+        <div>
+            <div class="muted">Min</div>
+            <div>
+                {% if stats.min_price is not none %}
+                    <strong>{{ "%.2f"|format(stats.min_price) }} {{ currency }}</strong>
+                {% else %}
+                    -
+                {% endif %}
+            </div>
+        </div>
+
+        <div>
+            <div class="muted">Median</div>
+            <div>
+                {% if stats.median_price is not none %}
+                    <strong>{{ "%.2f"|format(stats.median_price) }} {{ currency }}</strong>
+                {% else %}
+                    -
+                {% endif %}
+            </div>
+        </div>
+
+        <div>
+            <div class="muted">Max</div>
+            <div>
+                {% if stats.max_price is not none %}
+                    <strong>{{ "%.2f"|format(stats.max_price) }} {{ currency }}</strong>
+                {% else %}
+                    -
+                {% endif %}
+            </div>
+        </div>
+
+    </div>
+    {% endif %}
 </div>
 
+
+<!-- Items Table -->
 <div class="card">
     <h3>Sold Items ({{ items|length }})</h3>
 
@@ -20,6 +70,8 @@
             <tr>
                 <th>Ended</th>
                 <th>Title</th>
+                <th>Model</th>
+                <th>Size</th>
                 <th>Price</th>
                 <th>Cond.</th>
                 <th>Type</th>
@@ -27,6 +79,7 @@
                 <th>Bids</th>
             </tr>
             </thead>
+
             <tbody>
             {% for item in items %}
                 <tr>
@@ -37,6 +90,7 @@
                             -
                         {% endif %}
                     </td>
+
                     <td>
                         {% if item.view_url %}
                             <a href="{{ item.view_url }}" target="_blank" rel="noopener noreferrer">
@@ -46,6 +100,10 @@
                             {{ item.title }}
                         {% endif %}
                     </td>
+
+                    <td>{{ item.model or "-" }}</td>
+                    <td>{{ item.size or "-" }}</td>
+
                     <td>
                         {% if item.total_price_est %}
                             {{ item.total_price_est }} {{ item.currency }}
@@ -54,12 +112,15 @@
                         {% else %}
                             -
                         {% endif %}
+
                         {% if item.shipping_cost %}
                             <span class="muted">(+{{ item.shipping_cost }} ship)</span>
                         {% endif %}
                     </td>
+
                     <td>{{ item.condition or "-" }}</td>
                     <td>{{ item.listing_type or "-" }}</td>
+
                     <td>
                         {% if item.seller_username %}
                             {{ item.seller_username }}
@@ -67,14 +128,17 @@
                             -
                         {% endif %}
                     </td>
+
                     <td>{{ item.bid_count if item.bid_count is not none else "-" }}</td>
                 </tr>
             {% endfor %}
             </tbody>
         </table>
+
     {% else %}
         <p>No items found yet for this query.</p>
     {% endif %}
 </div>
+
 {% endblock %}
 

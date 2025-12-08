@@ -18,7 +18,7 @@ class Query(QueryBase):
     created_at: datetime
 
     class Config:
-        orm_mode = True
+        orm_mode = True  # v2 will nag, but it's fine for now
 
 
 class ItemBase(BaseModel):
@@ -39,6 +39,14 @@ class ItemBase(BaseModel):
     seller_positive_percent: Optional[float] = None
     view_url: Optional[str] = None
 
+    # Parsed / structured fields
+    brand: Optional[str] = None
+    model: Optional[str] = None
+    variant: Optional[str] = None
+    gender: Optional[str] = None
+    size: Optional[str] = None
+    colour: Optional[str] = None
+
 
 class ItemCreate(ItemBase):
     query_id: int
@@ -51,4 +59,13 @@ class Item(ItemBase):
 
     class Config:
         orm_mode = True
+
+
+class QueryStats(BaseModel):
+    query_id: int
+    item_count: int
+    min_price: Optional[float] = None
+    max_price: Optional[float] = None
+    avg_price: Optional[float] = None
+    median_price: Optional[float] = None
 
